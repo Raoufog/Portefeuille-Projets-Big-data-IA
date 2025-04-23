@@ -1,1 +1,148 @@
 https://console.cloud.google.com/bigquery?sq=686489477884:35228494bf55455b8fa4dfb340747aeb
+
+--Affiche toute la table
+SELECT * FROM `fr_caburant_projet.fr_caburant`
+/*
+--Affriche quelque colones spécifique
+SELECT 
+ code_postal,
+ adresse,
+ ville,
+ departement,
+ geom, 
+ prix_unite  
+FROM `fr_caburant_projet.fr_caburant`;
+
+--Trouve le minumum/maximum
+--min
+SELECT
+ MIN(prix_unite),
+ MAX(prix_unite)
+FROM `fr_caburant_projet.fr_caburant`
+
+-- Renomer les colonnes f0 et f1
+SELECT
+ MIN(prix_unite) AS mini_prix_unite,
+ MAX(prix_unite)AS max_prix_unite
+FROM `fr_caburant_projet.fr_caburant`
+
+-- Afficher les stations essence du departement 83
+
+SELECT
+  code_postal,
+  adresse,
+  ville,
+  numero_departement,
+  departement,
+  geom,
+  prix_unite
+FROM
+  `fr_caburant_projet.fr_caburant`
+WHERE
+  numero_departement = "83";
+
+
+  -- Compter les stations du département 83
+SELECT
+  COUNT(ID) AS nb_de_satation_83
+FROM
+  `fr_caburant_projet.fr_caburant`
+WHERE
+  numero_departement = "83";
+
+
+--Afficher les stations essence du departement 83 ayant de SP95
+SELECT
+ code_postal,
+  adresse,
+  ville,
+  numero_departement,
+  departement,
+  geom,
+  prix_unite
+FROM `fr_caburant_projet.fr_caburant` 
+WHERE numero_departement = '83' AND prix = 'SP95';
+
+
+-- compte le nb de station ayant du departement 83 ayant le SP95
+SELECT
+  COUNT(ID) AS nb_de_satation_83_SP95
+FROM
+  `fr_caburant_projet.fr_caburant`
+WHERE
+  numero_departement = "83"  AND prix = 'SP95';
+
+
+-- Trouver la station essence du 83 ayant le SP95 moins cher
+SELECT
+ code_postal,
+  adresse,
+  ville,
+  numero_departement,
+  departement,
+  geom,
+  prix_unite
+FROM `fr_caburant_projet.fr_caburant` 
+WHERE numero_departement = '83' 
+AND prix = 'SP95'
+ORDER BY prix_unite ASC;
+*/
+
+-- calcule de la distance 48,969353, 2,256694 aux stations le moins cher
+SELECT
+  code_postal,
+  ville,
+  departement,
+  prix_unite,
+  SPLIT(geom, ',')[SAFE_ORDINAL(1)] AS latitude,
+  SPLIT(geom, ',')[SAFE_ORDINAL(2)] AS longitude,
+  ROUND (ST_DISTANCE(ST_GEOGPOINT(2.256694, 48.969353), ST_GEOGPOINT(CAST(SPLIT(geom, ',')[SAFE_ORDINAL(1)] AS FLOAT64),
+      CAST(SPLIT(geom, ',')[SAFE_ORDINAL(2)] AS FLOAT64)))/1000,2) AS distance_maison_station
+FROM
+  `fr_caburant_projet.fr_caburant`
+WHERE
+  numero_departement = '83' AND prix = 'SP95'
+ORDER BY prix_unite ASC;
+
+
+
+-- LA distance à au moins 20KM
+-- Methode CTE
+WITH distance_20km AS (
+  SELECT
+    code_postal,
+    ville,
+    departement,
+    prix_unite,
+    SPLIT(geom, ',')[SAFE_ORDINAL(1)] AS latitude,
+    SPLIT(geom, ',')[SAFE_ORDINAL(2)] AS longitude,
+    ROUND(ST_DISTANCE(ST_GEOGPOINT(2.256694, 48.969353), ST_GEOGPOINT(CAST(SPLIT(geom, ',')[SAFE_ORDINAL(1)] AS BIGNUMERIC), CAST(SPLIT(geom, ',')[SAFE_ORDINAL(2)] AS BIGNUMERIC))) / 1000, 2) AS distance_maison_station
+  FROM
+    `fr_caburant_projet.fr_caburant`
+  WHERE
+    numero_departement = '83' AND prix = 'SP95'
+  ORDER BY
+    prix_unite
+)
+SELECT *
+FROM distance_20km
+WHERE distance_maison_station < 600;
+
+-- Données tableau du dashbord
+
+SELECT
+  ville,
+  adresse,
+  departement,
+  CONCAT(adresse, ' ', code_postal, ' ', ville) AS adress_station,
+  ROUND(prix_unite, 1) AS prix_unite,
+  SPLIT(geom, ',')[SAFE_ORDINAL(1)] AS latitude,
+  SPLIT(geom, ',')[SAFE_ORDINAL(2)] AS longitude,
+  ROUND(ST_DISTANCE(ST_GEOGPOINT(2.256694, 48.969353), ST_GEOGPOINT(CAST(SPLIT(geom, ',')[SAFE_ORDINAL(1)] AS FLOAT64),
+        CAST(SPLIT(geom, ',')[SAFE_ORDINAL(2)] AS FLOAT64))) / 1000, 2) AS distance_maison_station
+FROM
+  `fr_caburant_projet.fr_caburant`
+WHERE
+  numero_departement = '83' AND prix = 'SP95'
+ORDER BY prix_unite;
+
