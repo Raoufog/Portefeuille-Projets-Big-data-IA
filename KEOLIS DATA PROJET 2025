@@ -1,0 +1,207 @@
+### Projet Use case : Optimisation de la vitesse commerciale des bus Keolis
+Keolis est un des leaders mondiaux de la mobilité partagée et le partenaire privilégié des
+Autorités Organisatrices de Mobilité. En 2022, le Groupe a connu une croissance
+significative avec un chiffre d&#39;affaires de 6,7 milliards d&#39;euros. Présent dans 13 pays, nos
+68 000 collaborateurs œuvrent chaque jour à la proposition d&#39;une alternative crédible à la
+voiture individuelle et ainsi à l&#39;accélération de la transition écologique.
+Ensemble, nous co-construisons des solutions de transport en commun sûres,
+performantes et durables. Notre ambition est d&#39;imaginer et de déployer ces mobilités au
+service de chaque territoire, pour une meilleure qualité de vie de tous et de chacun.
+#### Le contexte :
+Keolis KORRIVA (Keolis Opération des Réseaux Relation Information Voyageurs
+Assistance) est une vision totalement innovante des métiers de la régulation en temps réel
+et de la diffusion de l’information voyageurs. Keolis KORRIVA prend en charge la sécurité,
+la régulation opérationnelle, l’information voyageurs, et le suivi qualité de la régularité via
+un PCC (Poste de Commandement Centralisé) pour l’ensemble de l’Ile de France. En lien
+avec les équipes locales de régulation des centres opérationnels de bus, les régulateurs
+anticipent et coordonnent les opérations pour limiter les impacts clients des aléas
+d’exploitation.
+
+Dans le cadre de sa stratégie d’amélioration de la performance des réseaux de bus en Ile-
+de-France, Keolis créé un nouveau service structurant visant à améliorer la vitesse
+commerciale de ces réseaux.
+
+L’approche innovante repose sur :
+
+• La collecte et le traitement automatisé des donnée
+• L’usage de l’intelligence artificielle pour identifier les causes et préconiser des solutions concrètes
+• L’objectif final d’améliorer la vitesse commerciale des bus
+
+Léquipe s’organise autour d’experts data et d’analystes voirie, en garantissant proximité
+terrain, agilité et impact rapide.
+##### Résumé de l'énnoncée de la mission :
+La direction opérationnelle de Keolis souhaite identifier les points de ralentissement récurrents sur plusieurs lignes de bus en Île-de-France. Objectif : améliorer la vitesse commerciale moyenne et proposer des ajustements d’itinéraire ou d’horaires.
+##### Actions clés de la mission :
+
+Préparation et automatisation de pipelines de données (Data Lake)
+
+Détection des points de ralentissement via modèles algorithmiques
+
+Création de dashboards Power BI pour visualiser la vitesse commerciale
+
+Collaboration avec des équipes terrain et exploitation
+##### Compétences pour bien exécuter la mission :
+
+Python (pandas, matplotlib, pyspark, scikit-learn)
+
+SQL (bonnes bases)
+
+Power BI
+
+Intérêt pour le terrain et la mobilité urbaine
+
+Connaissances appréciées en séries temporelles et ML
+#### Application                                     
+##### Etapes 1 Extraction et ingestion des données : sources(data.iledefrance-mobilites.fr)
+
+Objectif : Charger les données brutes (CSV).
+import pandas as pd
+import matplotlib as mp
+import seaborn as sns
+import folium
+from folium.plugins import MarkerCluster
+df_referentiel_lignes = pd.read_csv(file, sep=';', on_bad_lines='skip')
+df_tracers_lignes = pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\traces-des-lignes-regulieres-de-bus-en-ile-de-france.csv", sep=';', on_bad_lines='skip' )
+df_arrets_bus = pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\arrets_bus.csv", sep=';', on_bad_lines='skip' )
+df_gares_routieres = pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\gares-routieres-idf.csv", sep=';', on_bad_lines='skip' )
+df_poles_echange = pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\poles-d-echange.csv", sep=';', on_bad_lines='skip')
+df_referentiel_arret = pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\referentiel-arret-tc-idf.csv", sep=';', on_bad_lines='skip')
+df_relations = pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\relations.csv", sep=';', on_bad_lines='skip')
+df_zones_arrets= pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\zones-d-arrets.csv", sep=';', on_bad_lines='skip')
+df_zones_correspondance_onstreetBus = pd.read_csv("D:\\Dossier Raouf\\Database Bus Keolis Idf\\zones-de-correspondance_onstreetBus.csv", sep=';', on_bad_lines='skip')
+file = 'D:\\Dossier Raouf\\Database Bus Keolis Idf\\referentiel-des-lignes.csv'
+df_referentiel_lignes.dtypes
+df_zones_arrets
+df_zones_correspondance_onstreetBus
+df_relations
+df_gares_routieres
+df_referentiel_arret
+df_poles_echange
+df_referentiel_lignes
+df_referentiel_lignes.head(5)
+df_referentiel_lignes.tail(10)
+df_referentiel_lignes.dtypes
+df_referentiel_lignes.shape
+df_referentiel_lignes.info()
+df_tracers_lignes.dtypes
+df_tracers_lignes.head(5)
+df_arrets_bus
+df_gares_routieres
+df_zones_correspondance_onstreetBus
+print(df.head())  # Premières 5 lignes   df.head()
+print(df.tail(2)) # Dernières 2 lignes   df.tail(5)
+df.drop_duplicates(inplace= True) #pour supprimer les doublons dans la table
+df.dropna(inplace=True)  #supprimer les vaeleur manques
+print(df.info())      # Infos générales (colonnes, types, valeurs manquantes)
+print(df.describe())  # Statistiques descriptives uniquement pour les colonnes de type numériques (int float)
+print(df.shape)       # Dimensions du DataFrame
+print(df.columns)     # Noms des colonnes
+print(df['Nom'])         # Une seule colonne
+print(df[['Nom', 'Ville']]) # Plusieurs colonnes
+##### Etapes 2 Nettoyage & transformation; jointure
+Objectif : Supprimer les valeurs nulles, filtrer les anomalies, convertir les formats.
+df_referentiel_arret
+df_tracers_lignes
+df_tracers_lignes.dtypes
+# Exemple de jointure sur les LineId
+keolis_ids = df_referentiel_lignes[df_referentiel_lignes['OperatorName'].str.contains("Keolis", na=False)]['ID_Line']
+df_keolis_geo = df_tracers_lignes[df_tracers_lignes['LineId'].isin(keolis_ids)]
+
+keolis_ids
+df_keolis_geo
+df_referentiel_lignes
+df_referentiel_lignes.dtypes
+Répartition des types de transport
+df_referentiel_lignes['TransportMode'].value_counts().plot(kind='bar')
+
+df_nbr_ligne_parcommune = df_referentiel_lignes['ID_Line'].count()
+df_nbr_ligne_parcommune
+Nombre de ligne des principaux exploitants
+df_referentiel_lignes['OperatorName'].value_counts()
+
+df_keolis_lines = df_referentiel_lignes[df_referentiel_lignes['OperatorName'].str.contains("Keolis", case=False, na=False)]
+df_keolis_lines
+df_keolis_lines.to_csv('Keolis_ligne.csv', index= False)
+df_keolis_lines.shape
+df_keolis_lines['OperatorName'].value_counts().sort_values(ascending=False)
+Analyse de la stabilité du réseau ou fréquence de modification des lignes
+df_referentiel_lignes['Valid_fromDate'] = pd.to_datetime(df_referentiel_lignes['Valid_fromDate'])
+df_referentiel_lignes['Valid_toDate'] = pd.to_datetime(df_referentiel_lignes['Valid_toDate'])
+df_referentiel_lignes['Durée_validité'] = (df_referentiel_lignes['Valid_toDate'] - df_referentiel_lignes['Valid_fromDate']).dt.days
+df_referentiel_lignes['Durée_validité'].describe()
+
+ Accèssibilité des ligne Pourcentage des lignes avec accessibilité PMR
+df_referentiel_lignes['Accessibility'].value_counts(normalize=True) * 100
+
+df_referentiel_lignes['Air_Conditioning'].value_counts()
+df.dropna(inplace=True)#suppression
+
+#suppression des colones
+df.drop('Prime', axis=1, inplace=True)
+print(df)
+
+df.drop(0, axis=0, inplace=False)  # Supprimer la première ligne
+
+#Filtrage des lignes en fonction des colonnes
+print(df[df['colone'] > 30])  # Lignes où Colone est > 30
+print(df[(df['colone'] > 30) & (df['colone 1'] == 'Colone 2')])  # Combinaisons de conditions
+
+df['colone'] = [5000, 6000, 7000, 8000]
+print(df) #Ajouter une colonne
+Transformation
+df['timestamp'] = pd.to_datetime(df['timestamp']) #convertir les datetime formats.
+
+data_grouped = df.groupby('Ville')['Salaire'].mean()  # Salaire moyen par ville
+print(data_grouped)
+
+df2 = pd.DataFrame(data2)
+merged = pd.merge(df, df2, on='Nom', how='left')  # Jointure gauche en fonction du champs Nom
+print(merged)
+Analyse et observation 
+##### 2-1 Etude préparatoire à la data science(IA, modèles algorithmiques)
+
+Identifier les valeurs manquantes
+
+df.isnull().sum()         # Vérifier les Non null
+
+df.loc[2, 'Ville'] = None  # Ajouter une valeur manquante
+
+df['Ville'].fillna('Inconnue', inplace=True)  # Remplir les NaN; remplacer les non null
+
+df.dropna(inplace=False)  # Supprimer les lignes avec NaN
+Agrégation et enrichissement (ex. SQL ou PySpark)
+Objectif : Grouper les données par tronçon, heure, jour, etc.
+-- Exemple de transformation SQL à appliquer sur la base brute
+SELECT route_id, hour(timestamp) AS heure, AVG(delay) AS avg_delay
+FROM traffic_data
+GROUP BY route_id, hour(timestamp);
+
+
+# En PySpark :
+from pyspark.sql.functions import hour, avg
+
+df_agg = df_spark_clean.groupBy("route_id", hour("timestamp").alias("heure")) \
+                       .agg(avg("delay").alias("avg_delay"))
+
+##### Etapes 3 Loading et stockage dans data lake
+df_agg.write.mode("overwrite") \
+    .parquet("s3a://keogear-data/processed/avg_delay_by_route/")
+
+
+# Ex. d’upload avec Azure Data Lake via ADLFS
+import adlfs
+from azure.identity import DefaultAzureCredential
+
+fs = adlfs.AzureBlobFileSystem(account_name='keogearaccount', credential=DefaultAzureCredential())
+
+with fs.open('/processed/avg_delay_by_route/data.parquet', 'wb') as f:
+    df_agg.toPandas().to_parquet(f)
+
+Simple avec pandas
+df_loaded = pd.read_csv('data.csv')
+print(df_loaded)
+df.to_csv('data.csv', index=False)
+ ##### 3-1 Automatisation du ETL vers la data lake 
+Automatisation (via Airflow, cron, ou scripts programmés)
+Exemple : Script Python exécuté tous les jours à 1h via cron ou Airflow DAG
+0 1 * * * /usr/bin/python3 /home/raouf/pipeline_traffic_keogear.py
